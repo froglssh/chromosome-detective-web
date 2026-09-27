@@ -2,9 +2,6 @@
 <html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>染色體偵探社｜優化版</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 :root{
   --ground:#F4F1EA; --surface:#FFFFFF; --surface-2:#FAF7F1; --line:#E0D8C8; --line-soft:#ECE6DA;
@@ -389,13 +386,19 @@ button.row:hover{border-color:var(--accent);background:var(--accent-soft);transf
   .btn.small{padding:8px 10px;font-size:12.5px}
 }
 
+.qnav{display:flex;gap:7px;flex-wrap:wrap;position:sticky;top:0;z-index:2;padding:8px;background:var(--surface);border-bottom:1px solid var(--line-soft)}
+.qjump{min-width:38px;min-height:38px;border:1.5px solid var(--line);border-radius:9px;background:var(--surface-2);color:var(--ink);font:600 14px var(--mono);cursor:pointer}
+.qjump:hover,.qjump:focus-visible{border-color:var(--accent);background:var(--accent-soft)}
+.qjump.answered{border-color:var(--ok);color:var(--ok)}
+.qz[id],.tfrow[id]{scroll-margin-top:100px}
+@media(max-width:620px){.stage{overflow-x:auto}svg.board{min-width:620px;max-height:none!important}}
 </style>
 </head>
 <body>
 
 <header class="topbar hidden" id="topbar"><div class="wrap topin">
   <div class="tprow">
-    <span class="brand">染色體偵探社 <span class="version">v2.0 旗艦優化版</span></span>
+    <span class="brand">染色體偵探社 <span class="version">v2.1 優化版</span></span>
     <span class="crumb" id="crumb"></span>
     <button class="linkbtn" id="to-learn">回圖解教學</button>
   </div>
@@ -415,8 +418,8 @@ button.row:hover{border-color:var(--accent);background:var(--accent-soft);transf
       <p class="lede">讀完課本 P83–P91 和「遺傳的染色體學說之發展歷程」簡報之後，化身染色體偵探：從減數分裂的染色體動態找出孟德爾遺傳法則的證據，跟著摩根的果蠅發現性聯遺傳，再用譜系圖與機率破解紅綠色盲的遺傳之謎。</p>
       <div class="heroimg" id="heroimg"></div>
       <ul class="rules">
-        <li><span class="n">1</span><span>建議先看 <b>💡 重點圖解</b>（14 張圖卡，圖片與<b>逐格動畫</b>都取自課本與簡報），再進入 <b>8 道關卡</b>。</span></li>
-        <li><span class="n">2</span><span>關卡涵蓋多元互動：<div class="kinds"><span>染色體對應</span><span>配子排排站</span><span>摩根推理排序</span><span>果蠅棋盤</span><span>性別決定配對</span><span>譜系圖偵探</span><span>選擇題組</span><span>是非快答</span></div></span></li>
+        <li><span class="n">1</span><span>建議先看 <b>💡 重點圖解</b>（15 張圖卡，圖片與<b>逐格動畫</b>都取自課本與簡報），再進入 <b>9 道關卡</b>。</span></li>
+        <li><span class="n">2</span><span>關卡涵蓋多元互動：<div class="kinds"><span>染色體對應</span><span>配子排排站</span><span>摩根推理排序</span><span>果蠅棋盤</span><span>性別決定配對</span><span>譜系圖偵探</span><span>選擇題組</span><span>是非快答</span><span>簡報原題</span></div></span></li>
         <li><span class="n">3</span><span><b>自由選題與即時草稿</b>：支援頂部進度軌與底部選單隨意跳題，作答進度即時自動保存，跳題或看圖解不丟失紀錄。</span></li>
         <li><span class="n">4</span><span><b>圖解教學即時連動</b>：作答卡關時點擊「回圖解教學」即刻查看對應概念圖卡，按「↩ 返回目前作答」無縫銜接。</span></li>
         <li><span class="n">5</span><span><b>完整學習診斷卡</b>：答錯 5 次自動顯示答案；交卷後生成分項核心素養診斷報告，點擊題目列可直接跳回該題訂正重試。</span></li>
@@ -507,7 +510,7 @@ let SLOTG={};
 const shuffleArr=a=>{const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b};
 </script>
 <script>
-/* ════════ 圖解教學 14 張圖卡 ════════ */
+/* ════════ 圖解教學 15 張圖卡 ════════ */
 const COL={c1:'#4E8A2E',c2:'#C9612A',c3:'#6B4FA0',c4:'#0E7C74',c5:'#877865',c6:'#2E6A8A',c7:'#B8402F'};
 const pl=arr=>arr.map(([x,y,t,c,d,rx,ry])=>(rx!=null?`<span class="ring" style="left:${rx}%;top:${ry}%;animation-delay:${d}s;border-color:${COL[c]}"></span>`:'')+`<span class="pill ${c}" style="left:${x}%;top:${y}%;animation-delay:${d+.1}s">${t}</span>`).join('');
 const aniImg=(k,alt,pills,style='')=>`<div style="position:relative;${style}"><img class="base" src="${IMG[k]}" alt="${alt}" style="width:100%">${pl(pills)}</div>`;
@@ -637,7 +640,7 @@ function bindZoom(root){root.querySelectorAll('img.zoomable').forEach(i=>i.oncli
   const d=document.createElement('div');d.className='lb';d.innerHTML=`<img src="${i.src}" alt="${i.alt}">`;d.onclick=()=>d.remove();document.body.appendChild(d);});}
 </script>
 <script>
-/* ════════ 8 道關卡 ════════ */
+/* ════════ 9 道關卡 ════════ */
 const KIND={drag:'操作任務 · 拖曳',grid:'比較表勾選',calc:'計算題 · 下拉選答',quiz:'選擇題組 · 每題點選一個答案',tf:'是非快答',single:'單選',multi:'多選',order:'排序題 · 推理',fill:'填空',hot:'點圖',mtx:'配對題 · 點選'};
 const KSHORT={drag:'拖曳',grid:'比較表',calc:'計算',tf:'是非',single:'單選',multi:'多選',order:'排序',fill:'填空',hot:'點圖',mtx:'配對',quiz:'選擇'};
 const D=(a,wrong)=>({a,sel:shuffleArr([a,...wrong])});
@@ -798,16 +801,26 @@ const STAGES=[
   ['蝶類與蛾類子代的性別由精子決定。',false,'S1','蝶、蛾的雌性是 ZW，產生兩種卵，由卵決定性別。'],
   ['父親是紅綠色盲，兒子一定也是紅綠色盲。',false,'S3','兒子從父親得到的是 Y，他的 X 來自母親。']],
  why:'基因在細胞核內的染色體上；同源染色體在減數分裂Ⅰ分離（分離律），非同源染色體獨立分配（獨立分配律）。性染色體上的基因造成性聯遺傳：男性只有一條 X，所以色盲、白眼常見於雄性；兒子的 X 一定來自母親。',
- refs:[R('p35','簡報 p35 人類性染色體上的基因（補充）')]}
+ refs:[R('p35','簡報 p35 人類性染色體上的基因（補充）')]},
+
+{g:'g3',t:'簡報原題挑戰',sub:'簡報 p36–p40 原題改為互動作答；作答後才顯示解析。',
+ kind:'quiz',q:'完成 3 題簡報原題。第 3 題的譜系圖可點擊放大；按上方小題號可直接跳題。',hint:'注意題目問的是「與染色體學說建立相關與否」、「性狀表現是否連結性別」，以及 X 聯顯性家系的傳遞規則。',
+ preRefs:[R('k39_00','簡報 p39：X 染色體顯性遺傳譜系圖原題')],
+ qs:[
+  {q:'下列現象的發現，何者與遺傳的染色體學說之建立最不相關？',opts:['染色體由 DNA 與蛋白質組成','減數分裂時同源染色體分離','減數分裂時非同源染色體自由組合','減數分裂時發生染色體聯會','受精卵的染色體分別來自卵與精子'],a:0,tag:'C2',hint:'染色體學說建立時，尚未確認染色體的化學組成。',why:'答案 (A)。染色體學說根據染色體在減數分裂與受精中的行為，推論基因位於染色體上；染色體由 DNA 與蛋白質組成是後續的分子證據。'},
+  {q:'摩根以純品系紅眼雌果蠅與白眼雄果蠅交配，下列何者正確？',opts:['第一子代中有隱性白眼個體','第二子代紅眼與白眼比例明顯不同於孟德爾比例','第二子代的紅眼個體全為雌性','第二子代的白眼個體全為雄性','第二子代任兩隻交配都不可能生出白眼雌蠅'],a:3,tag:'M2',hint:'F2 的 XᴿXᴿ、XᴿXʳ、XᴿY、XʳY 四種組合中，哪一種是白眼？',why:'答案 (D)。F2 白眼個體為 XʳY，所以全是雄蠅；但若 XᴿXʳ 雌蠅與 XʳY 雄蠅交配，仍可能生出 XʳXʳ 白眼雌蠅。'},
+  {q:'依照上方譜系圖，哪些家系可能為 X 染色體顯性遺傳？選 2 項。',opts:['(A)、(B)','(A)、(E)','(B)、(D)','(C)、(D)','(C)、(E)'],a:4,tag:'S3',hint:'X 聯顯性：受影響父親把 X 傳給女兒、把 Y 傳給兒子；未受影響的雙親通常不會生出受影響子女。',why:'答案 (C)、(E)。(C) 受影響母親可能是異型合子，子女都有可能未表現；(E) 受影響父親把 X 傳給女兒、把 Y 傳給兒子，圖示可符合此傳遞方式。(A)、(D) 未受影響雙親生出受影響子女，不符合一般顯性遺傳；(B) 出現父傳子的情形，不符合 X 聯遺傳。'}],
+ why:'這組題目把染色體學說、摩根的 X 聯隱性遺傳和 X 聯顯性家系判讀放在一起。先辨認基因所在的染色體，再依親代能傳給子代的性染色體判斷。',
+ refs:[R('k37_00','簡報 p37 摩根實驗原題'),R('k38_01','簡報 p38 原題解析'),R('k40_01','簡報 p40 譜系題答案')] }
 ];
 </script>
 <script>
 const el=id=>document.getElementById(id);
 const KEY='chromodetect.v1';
 const REVEAL_N=5;   /* 答錯幾次後自動顯示答案 */
-let ST={idx:0,tries:{},tags:{},who:{n:'',c:'',s:''},t0:0,done:false,passed:{}};
+let ST={idx:0,tries:{},firstPassTries:{},practiceVisits:{},tags:{},who:{n:'',c:'',s:''},t0:0,done:false,passed:{}};
 let place={},sel=null,answered=false,pick=new Set(),order=[],layout={};
-let quizv={},mtxv={},seqv=[],fillv={},fillOn=null,matchv={},gridv={},tfv={},hotStep=0,hotMarks=[],optPerm=[];
+let quizv={},mtxv={},seqv=[],fillv={},fillOn=null,matchv={},gridv={},tfv={},hotStep=0,hotMarks=[],optPerm=[],activeStage=false;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(ST))}catch(e){}}
 function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return null}
 const GN={g1:'遺傳的染色體學說',g2:'性聯遺傳',g3:'總整理'};
@@ -816,10 +829,9 @@ function saveDraft(){
   if(!activeStage||ST.done||!STAGES[ST.idx])return;
   ST.drafts=ST.drafts||{};
   if(answered){delete ST.drafts[ST.idx];save();return;}
-  const s=STAGES[ST.idx];
-  ST.drafts[ST.idx]={place:{...place},pick:[...pick],order:[...order],fillv:{...fillv},
+  ST.drafts[ST.idx]={place:{...place},pick:[...pick],order:[...order],seqv:[...seqv],fillv:{...fillv},
     matchv:{...matchv},gridv:{...gridv},tfv:{...tfv},mtxv:{...mtxv},quizv:{...quizv},hotStep,
-    marks:s.kind==='hot'?(el('marks')?.innerHTML||''):''};
+    calcStep,calcVals:{...calcVals},calcWrong:{...calcWrong},calcRev:{...calcRev},dragDone,dragRev,marks:STAGES[ST.idx].kind==='hot'?(el('marks')?.innerHTML||''):''};
   save();
 }
 
@@ -879,7 +891,7 @@ function renderBoard(s){
   const TL=trayLayout(s);layout=TL.L;
   const BW=s.W||600;b.setAttribute('viewBox',`0 0 ${BW} ${TL.H}`);
   let o=s.scene();
-  o+=s.slots.map(x=>`<g class="slotg" data-slot="${x.id}"><rect class="slot" x="${x.x-x.w/2}" y="${x.y-x.h/2}" width="${x.w}" height="${x.h}" rx="7" fill="#FFFFFF" fill-opacity=".72" stroke="${TEAL}" stroke-width="2" stroke-dasharray="5 4" opacity=".9"/></g>`).join('');
+  o+=s.slots.map(x=>`<g class="slotg" tabindex="0" role="button" aria-label="放置位置 ${x.id}" data-slot="${x.id}"><rect class="slot" x="${x.x-x.w/2}" y="${x.y-x.h/2}" width="${x.w}" height="${x.h}" rx="7" fill="#FFFFFF" fill-opacity=".72" stroke="${TEAL}" stroke-width="2" stroke-dasharray="5 4" opacity=".9"/></g>`).join('');
   o+=`<rect x="4" y="${s.sceneH+6}" width="${BW-8}" height="${TL.H-s.sceneH-10}" rx="12" fill="#F1ECE2" stroke="#D8CEBC" stroke-width="1.5"/>`
     +txt(18,s.sceneH+28,'托盤　TRAY',{a:'start',fs:13,fw:500,c:'#877865',x:'letter-spacing="2"'});
   o+=order.map(p=>`<g class="piece" data-piece="${p.id}" tabindex="0" role="button" aria-label="標籤 ${p.label}">${pieceSVG(p)}</g>`).join('');
@@ -1001,9 +1013,10 @@ function drawFill(s,mark){
 /* 選擇題組 */
 function drawQuiz(s,mark){
   const o=el('q-opts');
-  o.innerHTML=`<div class="qbody">${s.qs.map((q,qi)=>`<div class="qz ${mark&&mark[qi]!=null?(mark[qi]?'good':'bad'):''}"><div class="qq"><span class="qn">${qi+1}</span><span>${q.q}</span></div>
-     <div class="qo">${s._qp[qi].map((oi,pos)=>`<button class="seg ${quizv[qi]===oi?'on':''}" data-q="${qi}" data-o="${oi}"><b class="qk">${'ABCD'[pos]}</b>${q.opts[oi]}</button>`).join('')}</div>
+  o.innerHTML=`<nav class="qnav" aria-label="選擇題組小題">${s.qs.map((q,qi)=>`<button type="button" class="qjump ${quizv[qi]!=null?'answered':''}" data-jump="${qi}" aria-label="跳到第 ${qi+1} 小題">${qi+1}${quizv[qi]!=null?' ✓':''}</button>`).join('')}</nav><div class="qbody">${s.qs.map((q,qi)=>`<div id="quiz-q-${qi}" class="qz ${mark&&mark[qi]!=null?(mark[qi]?'good':'bad'):''}"><div class="qq"><span class="qn">${qi+1}</span><span>${q.q}</span></div>
+     <div class="qo">${s._qp[qi].map((oi,pos)=>`<button class="seg ${quizv[qi]===oi?'on':''}" data-q="${qi}" data-o="${oi}"><b class="qk">${'ABCDE'[pos]}</b>${q.opts[oi]}</button>`).join('')}</div>
      ${answered?`<div class="qex">${q.opts[q.a]}：${q.why}</div>`:''}</div>`).join('')}</div>`;
+  o.querySelectorAll('.qjump').forEach(b=>b.onclick=()=>{const target=el(`quiz-q-${b.dataset.jump}`);if(target){target.scrollIntoView({behavior:'smooth',block:'start'});target.querySelector('.seg')?.focus({preventScroll:true});}});
   o.querySelectorAll('.seg').forEach(b=>b.onclick=()=>{if(answered)return;quizv[+b.dataset.q]=+b.dataset.o;drawQuiz(s);el('barmsg').textContent=`已作答 ${Object.keys(quizv).length} / ${s.qs.length} 題`;});
 }
 /* 配對表（每列兩欄選擇） */
@@ -1032,9 +1045,10 @@ function drawGrid(s,mark){
 /* 是非 */
 function drawTF(s,mark){
   const o=el('q-opts');
-  o.innerHTML=`<div class="qbody">${s.items.map((it,i)=>`<div class="tfrow ${mark&&mark[i]!=null?(mark[i]?'good':'bad'):''}"><span class="i">${String(i+1).padStart(2,'0')}</span><span>${it[0]}</span>
+  o.innerHTML=`<nav class="qnav" aria-label="是非題小題">${s.items.map((it,i)=>`<button type="button" class="qjump ${tfv[i]!=null?'answered':''}" data-jump="${i}" aria-label="跳到第 ${i+1} 小題">${i+1}${tfv[i]!=null?' ✓':''}</button>`).join('')}</nav><div class="qbody">${s.items.map((it,i)=>`<div id="tf-q-${i}" class="tfrow ${mark&&mark[i]!=null?(mark[i]?'good':'bad'):''}"><span class="i">${String(i+1).padStart(2,'0')}</span><span>${it[0]}</span>
      <span class="bt"><button class="tfb o ${tfv[i]===true?'on':''}" data-i="${i}" data-v="1" aria-label="正確">○</button><button class="tfb x ${tfv[i]===false?'on':''}" data-i="${i}" data-v="0" aria-label="錯誤">✕</button></span>
      ${answered?`<span class="ex">${it[1]?'○ 正確。':'✕ 錯誤。'}${it[3]}</span>`:''}</div>`).join('')}</div>`;
+  o.querySelectorAll('.qjump').forEach(b=>b.onclick=()=>{const target=el(`tf-q-${b.dataset.jump}`);if(target){target.scrollIntoView({behavior:'smooth',block:'start'});target.querySelector('.tfb')?.focus({preventScroll:true});}});
   o.querySelectorAll('.tfb').forEach(b=>b.onclick=()=>{if(answered)return;tfv[+b.dataset.i]=b.dataset.v==='1';drawTF(s,mark);
     el('barmsg').textContent=`已作答 ${Object.keys(tfv).length} / ${s.items.length} 句`;});
 }
@@ -1073,12 +1087,12 @@ function revMsg(){const n=Object.keys(calcRev).length;const a=[];
   if(n)a.push(`有 ${n} 個計算步驟因答錯 ${REVEAL_N} 次而自動顯示答案`);
   return a.length?a.join('；')+'，請對照答案再看一次。':false;}
 /* 拖曳完成後接著做下拉式計算 */
-function enterThen(s,rev){
+function enterThen(s,rev,resume=false){
   dragDone=true;dragRev=!!rev;sel=null;syncBoard();
   if(rev){ST.revealed=ST.revealed||{};ST.revealed[ST.idx]=true;}
   el('check-btn').classList.add('hidden');el('reset-btn').classList.add('hidden');
   el('q-label').textContent=KIND.calc;el('q-text').textContent=s.then.q;el('q-hint').textContent=s.then.hint||'';
-  calcStep=0;calcVals={};calcWrong={};calcRev={};
+  if(!resume){calcStep=0;calcVals={};calcWrong={};calcRev={};}
   drawCalc(s.then);
   el('q-opts').insertAdjacentHTML('afterbegin',rev?`<div class="fb rev"><h4>答案已顯示</h4><p>棋盤方格已答錯 ${REVEAL_N} 次，種子已自動放好。對照左邊的棋盤，繼續完成計算。</p></div>`:`<div class="fb ok"><h4>✓ 全部放對了</h4><p>${s.then.okMsg||'接著完成下面的計算。'}</p></div>`);
   el('q-fb').innerHTML='';
@@ -1121,12 +1135,14 @@ function show(i){
   if(i<0||i>=STAGES.length)return;
   saveDraft();
   if(ST.done){ST.done=false;el('done').classList.add('hidden');['play','topbar','bar'].forEach(x=>el(x).classList.remove('hidden'));}
+  ST.practiceVisits=ST.practiceVisits||{};if(ST.passed&&ST.passed[i])ST.practiceVisits[i]=(ST.practiceVisits[i]||0)+1;
   ST.idx=i;calcStep=0;calcVals={};calcWrong={};calcRev={};dragDone=false;dragRev=false;place={};sel=null;pick.clear();answered=false;seqv=[];fillv={};fillOn=null;matchv={};gridv={};tfv={};mtxv={};quizv={};hotStep=0;
   const draft=ST.drafts&&ST.drafts[i];
   if(draft){
-    place={...draft.place};pick=new Set(draft.pick||[]);if(draft.order)order=[...draft.order];
-    fillv={...draft.fillv};matchv={...draft.matchv};gridv={...draft.gridv};tfv={...draft.tfv};
-    mtxv={...draft.mtxv};quizv={...draft.quizv};hotStep=draft.hotStep||0;
+    place={...(draft.place||{})};pick=new Set(draft.pick||[]);if(draft.order)order=[...draft.order];seqv=[...(draft.seqv||[])];
+    fillv={...(draft.fillv||{})};matchv={...(draft.matchv||{})};gridv={...(draft.gridv||{})};tfv={...(draft.tfv||{})};
+    mtxv={...(draft.mtxv||{})};quizv={...(draft.quizv||{})};hotStep=draft.hotStep||0;
+    calcStep=draft.calcStep||0;calcVals={...(draft.calcVals||{})};calcWrong={...(draft.calcWrong||{})};calcRev={...(draft.calcRev||{})};dragDone=!!draft.dragDone;dragRev=!!draft.dragRev;
   }
   const s=STAGES[i];
   el('check-btn').classList.toggle('hidden',s.kind==='hot'||s.kind==='calc');el('next-btn').classList.add('hidden');
@@ -1134,13 +1150,15 @@ function show(i){
   el('reset-btn').classList.toggle('hidden',!['drag','order','fill','grid','tf','match','mtx','quiz'].includes(s.kind));
   el('barmsg').textContent=s.kind==='hot'?'在圖上點一下作答':s.kind==='calc'?`共 ${s.steps.length} 步，完成一步才會打開下一步`:'';
   renderPanel(s);renderBoard(s);
+  if(draft&&s.kind==='hot'&&draft.marks&&el('marks'))el('marks').innerHTML=draft.marks;
+  if(draft&&dragDone&&s.then)enterThen(s,dragRev,true);
   if(draft&&(s.kind==='single'||s.kind==='multi'))el('q-opts').querySelectorAll('.opt').forEach(b=>b.classList.toggle('sel',pick.has(+b.dataset.i)));
   if(ST.passed&&ST.passed[i])el('barmsg').textContent='本題已有完成紀錄；可以重新練習，或選擇其他題目。';
   activeStage=true;drawTrack();save();window.scrollTo({top:0,behavior:'smooth'});
 }
 function addTags(t){(t||[]).forEach(x=>{ST.tags[x]=(ST.tags[x]||0)+1})}
 function pass(s,rev){
-  answered=true;ST.passed=ST.passed||{};ST.passed[ST.idx]=true;
+  answered=true;ST.passed=ST.passed||{};ST.passed[ST.idx]=true;ST.firstPassTries=ST.firstPassTries||{};if(ST.firstPassTries[ST.idx]==null)ST.firstPassTries[ST.idx]=ST.tries[ST.idx]||1;
   if(ST.drafts)delete ST.drafts[ST.idx];
   if(rev){ST.revealed=ST.revealed||{};ST.revealed[ST.idx]=true;}
   el('q-fb').innerHTML=(rev?`<div class="fb rev"><h4>答案已顯示</h4><p>${rev===true?`已答錯 ${REVEAL_N} 次，正確答案已經自動填好，請對照答案再讀一次解析：`:rev}</p><p>${s.why}</p></div>`:`<div class="fb ok"><h4>✓ 正確</h4><p>${s.why}</p></div>`)+refHTML(s.refs);bindZoom(el('q-fb'));
@@ -1233,22 +1251,23 @@ function finish(){
   ST.done=true;save();
   ['play','bar'].forEach(x=>el(x).classList.add('hidden'));
   const mins=Math.max(1,Math.round((Date.now()-(ST.t0||Date.now()))/60000));
-  const tr=STAGES.map((s,i)=>ST.tries[i]||0);
-  const one=tr.filter((t,i)=>(ST.passed&&ST.passed[i])&&t===1).length;
-  const two=tr.filter((t,i)=>(ST.passed&&ST.passed[i])&&t===2).length;
-  const hard=tr.filter((t,i)=>(ST.passed&&ST.passed[i])&&t>=3).length;
+  const tr=STAGES.map((s,i)=>ST.tries[i]||0),first=STAGES.map((s,i)=>(ST.firstPassTries||{})[i]||tr[i]);
+  const one=first.filter((t,i)=>(ST.passed&&ST.passed[i])&&t===1).length;
+  const two=first.filter((t,i)=>(ST.passed&&ST.passed[i])&&t===2).length;
+  const hard=first.filter((t,i)=>(ST.passed&&ST.passed[i])&&t>=3).length;
   const passedCount=Object.keys(ST.passed||{}).length;
   const skippedCount=STAGES.length-passedCount;
   const w=ST.who||{};
   const RV=ST.revealed||{};
   const rows=STAGES.map((s,i)=>{
     const isPassed=ST.passed&&ST.passed[i];
-    const t=tr[i];
+    const t=tr[i],firstTry=first[i];
     let c='pending',stLabel='未作答';
     if(isPassed){
-      if(RV[i]||t>=3){c='t3';stLabel=`${t} 次（已通關）`;}
-      else if(t===2){c='t2';stLabel='2 次（已通關）';}
-      else{c='t1';stLabel='1 次（完美通關）';}
+      if(RV[i]||firstTry>=3){c='t3';stLabel=`首次 ${firstTry} 次通關`;}
+      else if(firstTry===2){c='t2';stLabel='首次 2 次通關';}
+      else{c='t1';stLabel='首次 1 次通關';}
+      const visits=(ST.practiceVisits||{})[i]||0;if(visits)stLabel+=` · 複習 ${visits} 次`;
     } else if(t>0){
       c='skip';stLabel=`嘗試 ${t} 次（暫跳過）`;
     }
@@ -1294,10 +1313,10 @@ function startPlay(){
   if(!ST.t0)ST.t0=Date.now();
   ['intro','learn','done'].forEach(x=>el(x).classList.add('hidden'));
   ['play','topbar','bar'].forEach(x=>el(x).classList.remove('hidden'));
-  if(ST.done){ST={idx:0,tries:{},tags:{},passed:{},who:ST.who,t0:Date.now(),done:false}}
+  if(ST.done){ST={idx:0,tries:{},firstPassTries:{},practiceVisits:{},tags:{},passed:{},who:ST.who,t0:Date.now(),done:false}}
   show(ST.idx||0);
 }
-const LEARN_FOR_STAGE=[1, 3, 6, 7, 10, 13, 12, 4];
+const LEARN_FOR_STAGE=[1, 3, 6, 7, 10, 13, 12, 4, 14];
 el('go').onclick=()=>{grabWho();startPlay()};
 el('go-learn').onclick=()=>{grabWho();openLearn(0)};
 el('to-learn').onclick=()=>openLearn(LEARN_FOR_STAGE[ST.idx]||0);
@@ -1310,18 +1329,19 @@ if(el('prev-btn'))el('prev-btn').onclick=()=>show(ST.idx-1);
 if(el('skip-btn'))el('skip-btn').onclick=()=>ST.idx+1<STAGES.length?show(ST.idx+1):finish();
 if(el('finish-btn'))el('finish-btn').onclick=finish;
 el('reset-btn').onclick=()=>{if(answered||dragDone)return;const s=STAGES[ST.idx];place={};sel=null;seqv=[];fillv={};fillOn=null;matchv={};gridv={};tfv={};mtxv={};quizv={};
-  if(s.kind==='drag')syncBoard();else renderPanel(s);el('q-fb').innerHTML=s.preRefs?refHTML(s.preRefs):'';bindZoom(el('q-fb'));el('barmsg').textContent='';};
+  if(s.kind==='drag')syncBoard();else renderPanel(s);el('q-fb').innerHTML=s.preRefs?refHTML(s.preRefs):'';bindZoom(el('q-fb'));el('barmsg').textContent='';saveDraft();};
 el('next-btn').onclick=()=>ST.idx+1<STAGES.length?show(ST.idx+1):finish();
 window.addEventListener('beforeunload',saveDraft);
 window.addEventListener('pagehide',saveDraft);
 const B=el('board');
 B.addEventListener('pointerdown',onDown);B.addEventListener('pointermove',onMove);B.addEventListener('pointerup',onUp);B.addEventListener('pointercancel',onUp);
 B.addEventListener('click',hotClick);
-B.addEventListener('keydown',e=>{const g=e.target.closest&&e.target.closest('.piece');if(g&&(e.key==='Enter'||e.key===' ')){e.preventDefault();sel=(sel===g.dataset.piece?null:g.dataset.piece);syncBoard();}});
+['click','input','change','pointerup'].forEach(type=>document.addEventListener(type,e=>{if(e.target.closest?.('#q-opts, #board'))setTimeout(saveDraft,0)}));
+B.addEventListener('keydown',e=>{const g=e.target.closest&&e.target.closest('.piece');if(g&&(e.key==='Enter'||e.key===' ')){e.preventDefault();sel=(sel===g.dataset.piece?null:g.dataset.piece);syncBoard();return;}const slot=e.target.closest&&e.target.closest('.slotg');if(slot&&(e.key==='Enter'||e.key===' ')){e.preventDefault();slot.click();}});
 el('heroimg').innerHTML=`<img src="${IMG.f211}" alt="課本圖2-11 摩根的果蠅雜交實驗">`;
 (function boot(){
   const saved=load();
-  if(saved&&!saved.done&&(saved.idx>0||Object.keys(saved.tries||{}).length)){
+  if(saved&&!saved.done&&(saved.idx>0||Object.keys(saved.tries||{}).length||Object.keys(saved.drafts||{}).length)){
     ST=Object.assign(ST,saved);el('f-name').value=ST.who.n||'';el('f-cls').value=ST.who.c||'';el('f-no').value=ST.who.s||'';
     el('go').textContent=`繼續闖關（第 ${ST.idx+1} 關）`;}
 })();
@@ -1353,6 +1373,7 @@ function closeShow(){showStopPlay();if(document.fullscreenElement)document.exitF
 document.addEventListener('keydown',e=>{
   const sh=el('show');
   if(sh&&sh.classList.contains('on')){
+    if(e.target.closest?.('button,select,input,textarea,[contenteditable="true"]')&&!['Escape','f','F'].includes(e.key))return;
     if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();showStep(1)}
     else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();showStep(-1)}
     else if(e.key==='Home'){showStopPlay();SI=0;showRender()}else if(e.key==='End'){showStopPlay();SI=DECK.length-1;showRender()}
